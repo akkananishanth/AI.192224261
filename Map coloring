@@ -1,0 +1,47 @@
+from itertools import product
+
+def csp(map, colors, constraints):
+    # Initialize a dictionary to store the color assigned to each region
+    assignment = {}
+
+    # Define a function to check if the assignment is consistent with the constraints
+    def is_consistent(region, color):
+        for neighbor in constraints.get(region, []):
+            if neighbor in assignment and assignment[neighbor] == color:
+                return False
+        return True
+
+    # Define a recursive function to assign colors to regions
+    def assign_colors(region_index):
+        if region_index == len(map):
+            return True
+
+        region = map[region_index]
+        for color in colors:
+            if is_consistent(region, color):
+                assignment[region] = color
+                if assign_colors(region_index + 1):
+                    return True
+                del assignment[region]
+
+        return False
+
+    # Start assigning colors from the first region
+    assign_colors(0)
+
+    return assignment
+
+# Example usage
+map = ['WA', 'NT', 'SA', 'Q', 'NSW', 'V', 'T']
+colors = ['Red', 'Green', 'Blue']
+constraints = {
+    'WA': ['NT', 'SA'],
+    'NT': ['WA', 'SA', 'Q'],
+    'SA': ['WA', 'NT', 'Q', 'NSW', 'V'],
+    'Q': ['NT', 'SA', 'NSW'],
+    'NSW': ['Q', 'SA', 'V'],
+    'V': ['SA', 'NSW']
+}
+
+assignment = csp(map, colors, constraints)
+print(assignment)
