@@ -1,38 +1,31 @@
-// Java code to implement the Traveling Salesman Problem
-import java.util.*;
+import sys
 
-public class TSP {
-    private static int tsp(int[][] graph, boolean[] visited, int current, int count, int n) {
-        if (count == n && graph[current][0] > 0) {
-            return graph[current][0];
-        }
+def nearest_neighbor(graph, start):
+    visited = [start]
+    n = len(graph)
+    current = start
 
-        int minCost = Integer.MAX_VALUE;
+    while len(visited) < n:
+        nearest = None
+        min_dist = sys.maxsize
+        for neighbor in range(n):
+            if neighbor not in visited and graph[current][neighbor] < min_dist:
+                nearest = neighbor
+                min_dist = graph[current][neighbor]
+        visited.append(nearest)
+        current = nearest
 
-        for (int i = 0; i < n; i++) {
-            if (!visited[i] && graph[current][i] > 0) {
-                visited[i] = true;
-                int cost = graph[current][i] + tsp(graph, visited, i, count + 1, n);
-                minCost = Math.min(minCost, cost);
-                visited[i] = false;
-            }
-        }
+    return visited
 
-        return minCost;
-    }
+# Example usage
+graph = [
+    [0, 10, 15, 20],
+    [10, 0, 35, 25],
+    [15, 35, 0, 30],
+    [20, 25, 30, 0]
+]
 
-    public static void main(String[] args) {
-        int[][] graph = {{0, 10, 15, 20},
-                         {10, 0, 35, 25},
-                         {15, 35, 0, 30},
-                         {20, 25, 30, 0}};
-        
-        int n = graph.length;
-        boolean[] visited = new boolean[n];
-        visited[0] = true; // Start from the first city
+start = 0  # Starting node
 
-        int minCost = tsp(graph, visited, 0, 1, n);
-        
-        System.out.println("Minimum cost to visit all cities: " + minCost);
-    }
-}
+tour = nearest_neighbor(graph, start)
+print("Nearest Neighbor Tour:", tour)
