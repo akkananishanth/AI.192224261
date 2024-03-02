@@ -1,0 +1,38 @@
+// Java code to implement the Traveling Salesman Problem
+import java.util.*;
+
+public class TSP {
+    private static int tsp(int[][] graph, boolean[] visited, int current, int count, int n) {
+        if (count == n && graph[current][0] > 0) {
+            return graph[current][0];
+        }
+
+        int minCost = Integer.MAX_VALUE;
+
+        for (int i = 0; i < n; i++) {
+            if (!visited[i] && graph[current][i] > 0) {
+                visited[i] = true;
+                int cost = graph[current][i] + tsp(graph, visited, i, count + 1, n);
+                minCost = Math.min(minCost, cost);
+                visited[i] = false;
+            }
+        }
+
+        return minCost;
+    }
+
+    public static void main(String[] args) {
+        int[][] graph = {{0, 10, 15, 20},
+                         {10, 0, 35, 25},
+                         {15, 35, 0, 30},
+                         {20, 25, 30, 0}};
+        
+        int n = graph.length;
+        boolean[] visited = new boolean[n];
+        visited[0] = true; // Start from the first city
+
+        int minCost = tsp(graph, visited, 0, 1, n);
+        
+        System.out.println("Minimum cost to visit all cities: " + minCost);
+    }
+}
